@@ -1,0 +1,12 @@
+.layout {
+  display: flex;
+  height: 100%;
+  min-height: 100dvh;
+  background: #0e1621;
+}
+
+@media (max-width: 720px) {
+  .layout {
+    flex-direction: column;
+  }
+}

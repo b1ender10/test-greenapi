@@ -1,0 +1,157 @@
+.pane {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  background:
+    linear-gradient(180deg, rgba(14, 22, 33, 0.55), rgba(14, 22, 33, 0.75)),
+    url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 5 L35 20 L50 20 L38 30 L43 45 L30 35 L17 45 L22 30 L10 20 L25 20 Z' fill='%231a2734' fill-opacity='0.35'/%3E%3C/svg%3E"),
+    #0e1621;
+}
+
+.emptyPane {
+  flex: 1;
+  display: grid;
+  place-items: center;
+  background: #0e1621;
+  color: #8b98a5;
+}
+
+.emptyCard {
+  padding: 14px 22px;
+  border-radius: 12px;
+  background: #182533;
+  font-size: 14px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  background: #17212b;
+  border-bottom: 1px solid #0e1621;
+  flex-shrink: 0;
+}
+
+.avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #5288c1;
+  color: #fff;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.title {
+  color: #fff;
+  font-weight: 500;
+}
+
+.subtitle {
+  color: #7f8b99;
+  font-size: 13px;
+}
+
+.messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 12%;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.bubble {
+  max-width: min(420px, 85%);
+  padding: 8px 10px 4px;
+  border-radius: 12px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.in {
+  align-self: flex-start;
+  background: #182533;
+  border-top-left-radius: 4px;
+}
+
+.out {
+  align-self: flex-end;
+  background: #2b5278;
+  border-top-right-radius: 4px;
+}
+
+.text {
+  margin: 0;
+  color: #fff;
+  font-size: 15px;
+  line-height: 1.35;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.time {
+  display: block;
+  text-align: right;
+  font-size: 11px;
+  color: #8bb0d0;
+  margin-top: 2px;
+}
+
+.in .time {
+  color: #7f8b99;
+}
+
+.error {
+  margin: 0;
+  padding: 6px 16px;
+  font-size: 13px;
+  color: #ff8a80;
+  background: #17212b;
+}
+
+.composer {
+  display: flex;
+  gap: 10px;
+  padding: 10px 16px 14px;
+  background: #17212b;
+  flex-shrink: 0;
+}
+
+.input {
+  flex: 1;
+  padding: 12px 16px;
+  border: none;
+  border-radius: 24px;
+  background: #242f3d;
+  color: #fff;
+  font: inherit;
+  outline: none;
+}
+
+.send {
+  width: 48px;
+  height: 48px;
+  border: none;
+  border-radius: 50%;
+  background: #2aabee;
+  color: #fff;
+  font-size: 18px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.send:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+@media (max-width: 720px) {
+  .messages {
+    padding: 12px 10px;
+  }
+}
