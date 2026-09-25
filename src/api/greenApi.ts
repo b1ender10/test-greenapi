@@ -4,10 +4,6 @@ import type {
   SendMessageResponse,
 } from '../types'
 
-function instanceBase(creds: Credentials): string {
-  return `/api/waInstance${creds.idInstance}`
-}
-
 function apiHost(creds: Credentials): string {
   try {
     return new URL(creds.apiUrl || 'https://api.green-api.com').host
@@ -16,12 +12,23 @@ function apiHost(creds: Credentials): string {
   }
 }
 
-function headers(creds: Credentials, json = false): HeadersInit {
-  const h: Record<string, string> = {
-    'X-Green-Api-Host': apiHost(creds),
-  }
-  if (json) h['Content-Type'] = 'application/json'
-  return h
+function instancePath(creds: Credentials, methodPath: string): string {
+  return `/waInstance${creds.idInstance}${methodPath}`
+}
+
+async function greenFetch(
+  creds: Credentials,
+  methodPath: string,
+  init: RequestInit = {},
+): Promise<Response> {
+  const headers = new Headers(init.headers)
+  headers.set('X-Green-Api-Host', apiHost(creds))
+  headers.set('X-Green-Api-Path', instancePath(creds, methodPath))
+
+  return fetch('/api/proxy', {
+    ...init,
+    headers,
+  })
 }
 
 async function parseJson<T>(res: Response): Promise<T> {
@@ -39,10 +46,9 @@ export async function sendMessage(
   chatId: string,
   message: string,
 ): Promise<SendMessageResponse> {
-  const url = `${instanceBase(creds)}/sendMessage/${creds.apiTokenInstance}`
-  const res = await fetch(url, {
+  const res = await greenFetch(creds, `/sendMessage/${creds.apiTokenInstance}`, {
     method: 'POST',
-    headers: headers(creds, true),
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ chatId, message }),
   })
   return parseJson<SendMessageResponse>(res)
@@ -52,8 +58,10 @@ export async function receiveNotification(
   creds: Credentials,
   receiveTimeout = 5,
 ): Promise<ReceiveNotificationResponse> {
-  const url = `${instanceBase(creds)}/receiveNotification/${creds.apiTokenInstance}?receiveTimeout=${receiveTimeout}`
-  const res = await fetch(url, { headers: headers(creds) })
+  const res = await greenFetch(
+    creds,
+    `/receiveNotification/${creds.apiTokenInstance}?receiveTimeout=${receiveTimeout}`,
+  )
   return parseJson<ReceiveNotificationResponse>(res)
 }
 
@@ -61,8 +69,11 @@ export async function deleteNotification(
   creds: Credentials,
   receiptId: number,
 ): Promise<void> {
-  const url = `${instanceBase(creds)}/deleteNotification/${creds.apiTokenInstance}/${receiptId}`
-  const res = await fetch(url, { method: 'DELETE', headers: headers(creds) })
+  const res = await greenFetch(
+    creds,
+    `/deleteNotification/${creds.apiTokenInstance}/${receiptId}`,
+    { method: 'DELETE' },
+  )
   if (!res.ok) {
     const text = await res.text().catch(() => '')
     throw new Error(text || `HTTP ${res.status}`)
@@ -71,10 +82,9 @@ export async function deleteNotification(
 
 /** Clear webhook so HTTP receiveNotification queue works */
 export async function enableHttpReceiving(creds: Credentials): Promise<void> {
-  const url = `${instanceBase(creds)}/setSettings/${creds.apiTokenInstance}`
-  const res = await fetch(url, {
+  const res = await greenFetch(creds, `/setSettings/${creds.apiTokenInstance}`, {
     method: 'POST',
-    headers: headers(creds, true),
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       webhookUrl: '',
       incomingWebhook: 'yes',

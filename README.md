@@ -66,7 +66,7 @@ src/
   components/               # Login, список чатов, окно чата
   utils/phone.ts
 api/
-  [...path].ts              # serverless-прокси для Vercel
+  proxy.ts                  # serverless Edge-прокси для Vercel
 ```
 
 ## Примечание по безопасности
